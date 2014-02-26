@@ -1,7 +1,7 @@
 ---
 layout:   post
 title:    "Ceph Performance Analysis: fio and RBD"
-date:     2014-02-26
+date:     2014-02-26 22:42:00
 author:   Danny Al-Gaaf & Daniel Gollub
 comments: true
 ---
