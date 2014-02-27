@@ -4,6 +4,7 @@ title:    "Ceph Performance Analysis: fio and RBD"
 date:     2014-02-26 22:42:00
 author:   Danny Al-Gaaf & Daniel Gollub
 comments: true
+categories: [ceph]
 ---
 
 With this blog post we want to share insights into how the Platform Engineering team for the [Business Marketplace](https://portal.telekomcloud.com/en/) at Deutsche Telekom AG analyzed a Ceph performance issue. Ceph is used for both block storage and object stroage in our cloud production platform.
