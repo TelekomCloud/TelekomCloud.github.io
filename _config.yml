@@ -2,6 +2,7 @@ name: TelekomCloud DevOps team
 title: TelekomCloud DevOps team
 
 highlighter: pygments
+markdown: kramdown
 
 production_url: http://telekomcloud.github.io
 atom_path : /atom.xml
