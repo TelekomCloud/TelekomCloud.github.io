@@ -1,24 +1,24 @@
 ---
 layout:   post
-title:    "An automat openStack deployment for develop and test system"
-date:     2014-05-05 16:00:00
+title:    "An automat OpenStack deployment for develop and test system"
+date:     2014-05-07 16:00:00
 author:   Tri Hoang Vo
 comments: true
 ---
 
 When I joined Deutsche Telekom 2 years ago, I had to share a common reference test system with everyone in the rooms, including all operators and developers. This was quite troublesomes when you have new ideas to test without interfering anyone, also make sure that your experiments will not break things down and make your colleagues angry.
 
-![Test system](/images/2014-05-05-vagrant-openstack/test_system.jpg)
+![Test system](/images/2014-05-07-vagrant-openstack/test_system.jpg)
 Figure1: a local integration test for experiment on new features
 
-Like any development process, a local integration test system is required. It must support developers editing and debugging openStack on the fly, as well as operators or package-manager testing a release. It's also nice to reset the test system from dirty changes and provision it again as fast as possible. This post introduces such system and now available upstream on [our repository](https://github.com/TelekomCloud/vagrant_openstack).
+Like any development process, a local integration test system is required. It must support developers editing and debugging OpenStack on the fly, as well as operators or package-manager testing a release. It's also nice to reset the test system from dirty changes and provision it again as fast as possible. This post introduces such system and now available upstream on [our repository](https://github.com/TelekomCloud/vagrant_openstack).
 
 # 1. Overview
 
-![vagrant project](/images/2014-05-05-vagrant-openstack/vagrant_project.jpg)
-Figure 2: deployment of openStack by vagrant
+![vagrant project](/images/2014-05-07-vagrant-openstack/vagrant_project.jpg)
+Figure 2: deployment of OpenStack by vagrant
 
-Vagrant is responsible for bringing the VMs up (step 1), setting up host-only networks within Virtual Box (step 2) and install base packages. From now on there are two ways to deploy openStack depends on your needs (step 5). For development purpose, openStack is deployed by devstack. For testing release packages, puppet is in use. The two deployments are configurable in a global file. Their git modules are authenticated (in case your company requires ssl for connection) and drop-in the vm for deployment (step 4).
+Vagrant is responsible for bringing the VMs up (step 1), setting up host-only networks within Virtual Box (step 2) and install base packages. From now on there are two ways to deploy OpenStack depends on your needs (step 5). For development purpose, OpenStack is deployed by devstack. For testing release packages, puppet is in use. The two deployments are configurable in a global file. Their git modules are authenticated (in case your company requires ssl for connection) and drop-in the vm for deployment (step 4).
 
 From my personal use case, I always need to switch between the 2 deployments: devstack for coding and puppet for testing packages. Switching between the two is also supported to keep the previous deployment save, separated and reuse.
 
@@ -27,7 +27,7 @@ From my personal use case, I always need to switch between the 2 deployments: de
 
 ## 1.1 Networking
 
-Back to that time I only found projects that deploy all openStack components in one VM. This does not satisfy our needs because the all-in-one deployment does not reflect the behavior of the GRE data network within different openStack components. Figure 2 above shows multi nodes: control, compute and neutron node along with the 3 host-only networks for management, data GRE, and public network are brought up automatically.
+Back to that time I only found projects that deploy all OpenStack components in one VM. This does not satisfy our needs because the all-in-one deployment does not reflect the behavior of the GRE data network within different OpenStack components. Figure 2 above shows multi nodes: control, compute and neutron node along with the 3 host-only networks for management, data GRE, and public network are brought up automatically.
 
         # supports multi nodes to enable/disable
         $ vagrant status
@@ -43,18 +43,18 @@ Back to that time I only found projects that deploy all openStack components in 
 
 In such testing environment, we also need to test the floating ips of the VMs over the public network, because it would be extremely boring if the nova booting VMs cannot connect to the Internet. For this reason, figure 3 shows how packages from inside the neutron node go out and back. Packages coming from br-tun, br-int, go to br-ex on neutron node, are forwarded to the NAT interface (vboxnet0) and SNATed so that they can find the way to go back.
 
-![SNAT for testing floating ips](/images/2014-05-05-vagrant-openstack/vagrant_net2.jpg)
+![SNAT for testing floating ips](/images/2014-05-07-vagrant-openstack/vagrant_net2.jpg)
 Figure 3: SNAT for testing floating ips
 
 ## 1.2 Storage
 
-For a simple nova volume setup, iSCSI is chosen by default. We also develop a deployed component for CEPH but it's not upstream. The VBOXManage command is very useful in this case to create a vdi storage and attach to the control node [2]. Of course not forget to format the virtual storage, and create a volume group cinder-volumes for cinder [3].
+For a simple nova volume setup, iSCSI is chosen by default. The VBOXManage command is very useful in this case to create a vdi storage and attach to the control node [2]. Of course not forget to format the virtual storage, and create a volume group cinder-volumes for cinder [3].
 
 # 2. Deployment environments
 
 ## 2.1 puppet
 
-A VM puppetmaster is up with puppetdb installed. It pulls manifests from a configurable git repository to a directory inside the vm and use these manifests to deploy openStack on the other VMs. By default manifests in [4](https://github.com/trihoangvo/vagrant_openstack_puppet) is provided as an example to try out the new Icehouse release with ML2 plugin/l2 population. You can also provide your own manifests by configuring a puppet repository and which site.pp to use for the nodes definition:
+A VM puppetmaster is up with puppetdb installed. It pulls manifests from a configurable git repository to a directory inside the vm and use these manifests to deploy OpenStack on the other VMs. By default manifests in [4](https://github.com/trihoangvo/vagrant_openstack_puppet) is provided as an example to try out the new Icehouse release with ML2 plugin/l2 population. You can also provide your own manifests by configuring a puppet repository and which site.pp to use for the nodes definition:
 
         puppet_giturl: git@your.repository.git
         puppet_branch: your_branch
@@ -62,14 +62,14 @@ A VM puppetmaster is up with puppetdb installed. It pulls manifests from a confi
 
 ## 2.2 devstack
 
-I like the deployment whereby provisioning script is provided directly inside the vm. For this reason, puppet master for deployment devstack is not necessary. Insteads devstack is directly cloned and setup inside all VMs. It is also config to use the .pip repository of openStack [5]. Pydev is also included in the VMs for remote debugging from the host machine supported.
+I like the deployment whereby provisioning script is provided directly inside the vm. For this reason, puppet master for deployment devstack is not necessary. Insteads devstack is directly cloned and setup inside all VMs. It is also config to use the .pip repository of OpenStack [5]. Pydev is also included in the VMs for remote debugging from the host machine supported.
 
-![vagrant project](/images/2014-05-05-vagrant-openstack/test_system2.jpg)
+![vagrant project](/images/2014-05-07-vagrant-openstack/test_system2.jpg)
 Figure 2: Remote debugging with MySQL Workbench & Eclipse
 
 # 3. Performance boost
 
-One issue is the long deployment time, especially if you have a low connection or connection drops in the middle of the deployment. So I tried out all tiny possibilities to reduce the time consuming.
+One issue is the long deployment time, especially if you have a slow connection or connection drops in the middle of the deployment. So I tried out all tiny possibilities to reduce the time consuming.
 
 ## 3.1 Caching
 
@@ -107,9 +107,10 @@ To reduce the vagrant up time, a vagrant box is customized with packages pre-ins
 
 win 4.6 min
 
-REFERENCES
+# REFERENCES
+
 1. [https://github.com/TelekomCloud/vagrant_openstack](https://github.com/trihoangvo/vagrant_openstack)
 2. [Creates vstorage codes](https://gist.github.com/trihoangvo/5f219492170f564ce854)
 3. [Format vstorage codes](https://gist.github.com/trihoangvo/fb32e38c303b05f01831)
 4. [puppet for Icehouse](https://github.com/trihoangvo/vagrant_openstack_puppet)
-5. [openStack pypi](http://pypi.openstack.org/openstack)
+5. [OpenStack pypi](http://pypi.openstack.org/openstack)
