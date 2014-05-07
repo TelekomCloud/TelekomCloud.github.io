@@ -48,7 +48,15 @@ Figure 3: SNAT for testing floating ips
 
 ## 1.2 Storage
 
-For a simple nova volume setup, iSCSI is chosen by default. The VBOXManage command [3] is very useful in this case to create a vdi storage and attach to the control node. Of course not forget to format the virtual storage, and create a volume group cinder-volumes for cinder.
+For a simple nova volume setup, iSCSI is chosen by default. The VBoxManage command [3] is very useful in this case for our vagrant to create a virtual storage and attach to control node. For those who interests in coding, the VBoxManage command is as follows
+
+        # create virtual storage
+        VBoxManage createhd --filename <vdi> --size <cinder_storage_size>
+        # and attach it to a vm
+        VBoxManage storageattach <vm_id> --storagectl "SATA Controller" --port 1 
+        --device 0 --type hdd --medium <vdi>
+
+The system also formats the new virtual storage, and creates a volume group `cinder-volumes` for cinder. It's also worth to mention that, in order to keep the data separated for 2 deployed environment, two separated virtual storages have to be created for each environment.
 
 # 2. Deployment environments
 
