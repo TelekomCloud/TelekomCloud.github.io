@@ -48,13 +48,13 @@ Figure 3: SNAT for testing floating ips
 
 ## 1.2 Storage
 
-For a simple nova volume setup, iSCSI is chosen by default. The VBOXManage command is very useful in this case to create a vdi storage and attach to the control node [2]. Of course not forget to format the virtual storage, and create a volume group cinder-volumes for cinder [3].
+For a simple nova volume setup, iSCSI is chosen by default. The VBOXManage command [3] is very useful in this case to create a vdi storage and attach to the control node. Of course not forget to format the virtual storage, and create a volume group cinder-volumes for cinder.
 
 # 2. Deployment environments
 
 ## 2.1 puppet
 
-A VM puppetmaster is up with puppetdb installed. It pulls manifests from a configurable git repository to a directory inside the vm and use these manifests to deploy OpenStack on the other VMs. By default manifests in [4](https://github.com/trihoangvo/vagrant_openstack_puppet) is provided as an example to try out the new Icehouse release with ML2 plugin/l2 population. You can also provide your own manifests by configuring a puppet repository and which site.pp to use for the nodes definition:
+A VM puppetmaster is up with puppetdb installed. It pulls manifests from a configurable git repository to a directory inside the vm and use these manifests to deploy OpenStack on the other VMs. By default manifests in [4](https://github.com/TelekomCloud/vagrant_openstack_puppet) is provided as an example to try out the new Icehouse release with ML2 plugin/l2 population. You can also provide your own manifests by configuring a puppet repository and which site.pp to use for the nodes definition:
 
         puppet_giturl: git@your.repository.git
         puppet_branch: your_branch
@@ -62,7 +62,7 @@ A VM puppetmaster is up with puppetdb installed. It pulls manifests from a confi
 
 ## 2.2 devstack
 
-I like the deployment whereby provisioning script is provided directly inside the vm. For this reason, puppet master for deployment devstack is not necessary. Insteads devstack is directly cloned and setup inside all VMs. It is also config to use the .pip repository of OpenStack [5]. Pydev is also included in the VMs for remote debugging from the host machine supported.
+I like the deployment whereby provisioning script is provided directly inside the vm. For this reason, puppet master for deployment devstack is not necessary. Insteads devstack is directly cloned and setup inside all VMs. It is also config to use the .pip repository of OpenStack [3]. Pydev is also included in the VMs for remote debugging from the host machine supported.
 
 ![vagrant project](/images/2014-05-07-vagrant-openstack/test_system2.jpg)
 Figure 2: Remote debugging with MySQL Workbench & Eclipse
@@ -105,12 +105,11 @@ To test a custom package, simply replace it under the cache folder and bringing 
 
 To reduce the vagrant up time, a vagrant box is customized with packages pre-installed. The box is based on precise64 with packages such as VBox Guest Additions 4.3.8, puppet, dnsmasq, r10k, vim, git, rubygems, msgpack, lvm2 pre-installed. The box is also zero out all empty spaces and white out all logs to have a minimum size as possible (378 Mb) to distribute on [vagrant cloud](https://vagrantcloud.com/TelekomCloud/). This again cuts down 70 secs for each vm up (from 79 secs to 8 secs).
 
-win 4.6 min
+win 4.6 min (4 VMs x 70 secs)
 
 # REFERENCES
 
-1. [https://github.com/TelekomCloud/vagrant_openstack](https://github.com/trihoangvo/vagrant_openstack)
-2. [Creates vstorage codes](https://gist.github.com/trihoangvo/5f219492170f564ce854)
-3. [Format vstorage codes](https://gist.github.com/trihoangvo/fb32e38c303b05f01831)
-4. [puppet for Icehouse](https://github.com/trihoangvo/vagrant_openstack_puppet)
-5. [OpenStack pypi](http://pypi.openstack.org/openstack)
+1. [https://github.com/TelekomCloud/vagrant_openstack](https://github.com/TelekomCloud/vagrant_openstack)
+2. [puppet for Icehouse](https://github.com/TelekomCloud/vagrant_openstack_puppet)
+3. [VBoxManage](http://www.virtualbox.org/manual/ch08.html)
+4. [OpenStack pypi](http://pypi.openstack.org/openstack)
