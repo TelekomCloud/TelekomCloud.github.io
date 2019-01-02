@@ -1,0 +1,12 @@
+---
+sudo: required
+dist: xenial
+
+language: generic
+
+install:
+   - sudo apt install jekyll
+
+script:
+  - jekyll doctor
+  - jekyll build
