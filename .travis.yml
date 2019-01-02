@@ -4,8 +4,9 @@ dist: xenial
 
 language: generic
 
-install:
-   - sudo apt install jekyll
+before_install:
+   - sudo apt update
+   - sudo apt install -y jekyll
 
 script:
   - jekyll doctor
